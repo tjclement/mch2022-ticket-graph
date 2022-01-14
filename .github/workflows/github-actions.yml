@@ -18,23 +18,23 @@ jobs:
         run: python3 main.py
       - name: Push changes
         uses: EndBug/add-and-commit@v7
-          with:
-            # The name of the user that will be displayed as the author of the commit.
-            # Default: depends on the default_author input
-            author_name: Github Actions
+        with:
+          # The name of the user that will be displayed as the author of the commit.
+          # Default: depends on the default_author input
+          author_name: Github Actions
 
-            # The email of the user that will be displayed as the author of the commit.
-            # Default: depends on the default_author input
-            author_email: projectleiding@mch2022.org
+          # The email of the user that will be displayed as the author of the commit.
+          # Default: depends on the default_author input
+          author_email: projectleiding@mch2022.org
 
-            # The name of the branch to use, if different from the one that triggered the workflow.
-            # Default: the branch that triggered the run
-            branch: main
+          # The name of the branch to use, if different from the one that triggered the workflow.
+          # Default: the branch that triggered the run
+          branch: main
 
-            # The message for the commit.
-            # Default: 'Commit from GitHub Actions (name of the workflow)'
-            message: "Updated ticket counter graph"
+          # The message for the commit.
+          # Default: 'Commit from GitHub Actions (name of the workflow)'
+          message: "Updated ticket counter graph"
 
-            # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (see the paragraph below for more info)
-            # Default: true
-            push: true
+          # Whether to push the commit and, if any, its tags to the repo. It can also be used to set the git push arguments (see the paragraph below for more info)
+          # Default: true
+          push: true
