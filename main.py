@@ -14,6 +14,10 @@ def get_updated_counters(tickets):
     new_data = {key: [tickets[key]["sold"]] for key in tickets.keys()}
     new_data["utc_epoch_time"] = time.time()
 
+    # RegularTickets includes Earlybirds, so need to subtract them for an accurate graph
+    if "Early-BirdTickets" in new_data and "RegularTickets" in new_data:
+        new_data["RegularTickets"][0] -= new_data["Early-BirdTickets"][0]
+
     filename = "tickets.csv"
     data = read_csv(filename)
     data = data.append(DataFrame(new_data), ignore_index=True)

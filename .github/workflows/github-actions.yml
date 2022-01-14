@@ -1,4 +1,4 @@
-name: GitHub Actions Demo
+name: Regenerate Ticket Graph
 on:
   push:
     branches: [main]
