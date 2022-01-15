@@ -14,6 +14,9 @@ def get_updated_counters(tickets):
     new_data = {key: [tickets[key]["sold"]] for key in tickets.keys()}
     new_data["utc_epoch_time"] = time.time()
 
+    # Earlybirds were removed from MQTT on Jan 14th, but we do want them in this graph
+    new_data["Early-BirdTickets"] = [512]
+
     # RegularTickets includes Earlybirds, so need to subtract them for an accurate graph
     if "Early-BirdTickets" in new_data and "RegularTickets" in new_data:
         new_data["RegularTickets"][0] -= new_data["Early-BirdTickets"][0]
