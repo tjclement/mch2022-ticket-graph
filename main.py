@@ -30,16 +30,17 @@ def get_updated_counters(tickets):
 
 def plot_counters(data):
     timestamps = [datetime.fromtimestamp(stamp) for stamp in data["utc_epoch_time"].to_list()]
-    list_data = {key: data[key].to_list() for key in data.keys() if key != "utc_epoch_time"}
+    list_data = {key: data[key].to_list() for key in data.keys() if key not in ["utc_epoch_time", "CamperTicket"]}
 
     fig, ax = plt.subplots()
     ax.stackplot(timestamps, list_data.values(),
                  labels=list_data.keys(), alpha=0.8)
-    ax.legend(loc='upper left')
-    ax.set_title('MCH Ticket Sales')
-    ax.set_xlabel('Time')
-    ax.set_ylabel('Number of tickets sold')
-    ax.xaxis.set_major_formatter(mdates.DateFormatter('%m/%d %H:%M'))
+    ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required tickets w/ donations")
+    ax.legend(loc="upper left")
+    ax.set_title("MCH Ticket Sales")
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Number of tickets sold")
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d %H:%M"))
 
     plt.gcf().autofmt_xdate()
     plt.savefig("mch2022tickets.png")
@@ -60,7 +61,7 @@ async def main(loop):
             await client.subscribe("mch2022/ticketshop/#")
             asyncio.create_task(process_tickets(tickets))
             async for message in messages:
-                name_tokens = message.topic.split('/')
+                name_tokens = message.topic.split("/")
                 if len(name_tokens) < 3:
                     print(f"Invalid ticket name '{message.topic}', skipping")
                     continue
