@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 
 import asyncio
+
+from matplotlib import cycler
 from pandas import *
 from asyncio_mqtt import Client
 import matplotlib.pyplot as plt
@@ -33,14 +35,22 @@ def plot_counters(data):
     list_data = {key: data[key].to_list() for key in data.keys() if key not in ["utc_epoch_time", "CamperTicket"]}
 
     fig, ax = plt.subplots()
+    fig.set_facecolor("#491d88")
+    ax.set_facecolor("#fec859")
+    ax.set_prop_cycle(cycler(color=["#fa448c", "#43b5a0", "#331a38"]))
+    ax.xaxis.label.set_color('white')
+    ax.yaxis.label.set_color('white')
+    ax.tick_params(axis='x', colors='white')
+    ax.tick_params(axis='y', colors='white')
+
     ax.stackplot(timestamps, list_data.values(),
                  labels=list_data.keys(), alpha=0.8)
     ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required tickets w/ donations")
     ax.legend(loc="upper left")
-    ax.set_title("MCH Ticket Sales")
+    ax.set_title("MCH Ticket Sales", color="white")
     ax.set_xlabel("Time")
     ax.set_ylabel("Number of tickets sold")
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d %H:%M"))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
 
     plt.gcf().autofmt_xdate()
     plt.savefig("mch2022tickets.png")
