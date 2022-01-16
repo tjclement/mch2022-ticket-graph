@@ -25,8 +25,16 @@ def get_updated_counters(tickets):
 
     filename = "tickets.csv"
     data = read_csv(filename)
+
+    last = data.tail(1)
+    differences = [key for key in new_data.keys() if key != 'utc_epoch_time' and (last[key] != new_data[key]).any()]
+
+    # Append the current row anyhow to move the graph forward
     data = data.append(DataFrame(new_data), ignore_index=True)
-    data.to_csv(filename, index=False)
+
+    if differences:
+        data.to_csv(filename, index=False)
+
     return data
 
 
