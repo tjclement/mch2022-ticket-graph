@@ -32,7 +32,7 @@ def get_updated_counters(tickets):
 
 def plot_counters(data):
     timestamps = [datetime.fromtimestamp(stamp) for stamp in data["utc_epoch_time"].to_list()]
-    list_data = {key: data[key].to_list() for key in data.keys() if key not in ["utc_epoch_time", "CamperTicket"]}
+    list_data = {key: data[key].to_list() for key in data.keys() if key not in ["utc_epoch_time", "CamperTicket", "Harbour"]}
 
     fig, ax = plt.subplots()
     fig.set_facecolor("#491d88")
