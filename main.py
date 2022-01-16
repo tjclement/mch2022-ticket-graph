@@ -32,7 +32,8 @@ def get_updated_counters(tickets):
 
 def plot_counters(data):
     timestamps = [datetime.fromtimestamp(stamp) for stamp in data["utc_epoch_time"].to_list()]
-    list_data = {key: data[key].to_list() for key in data.keys() if key not in ["utc_epoch_time", "CamperTicket", "Harbour"]}
+    hidden_list = ["utc_epoch_time", "CamperTicket", "Harbour"]
+    list_data = {key: data[key].to_list() for key in data.keys() if not any([hidden in key for hidden in hidden_list])}
 
     fig, ax = plt.subplots()
     fig.set_facecolor("#491d88")
@@ -48,9 +49,9 @@ def plot_counters(data):
     ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required tickets w/ donations")
     ax.legend(loc="upper left")
     ax.set_title("MCH Ticket Sales", color="white")
-    ax.set_xlabel("Time")
     ax.set_ylabel("Number of tickets sold")
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%m/%d"))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=[mdates.MO, mdates.FR], tz=mdates.UTC))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %m/%d"))
 
     plt.gcf().autofmt_xdate()
     plt.savefig("mch2022tickets.png")
