@@ -36,7 +36,7 @@ def plot_counters(data):
     list_data = {key: data[key].to_list() for key in data.keys() if not any([hidden in key for hidden in hidden_list])}
 
     fig, ax = plt.subplots()
-    fig.set_facecolor("#491d88")
+    fig.patch.set_alpha(0)
     ax.set_facecolor("#fec859")
     ax.set_prop_cycle(cycler(color=["#fa448c", "#43b5a0", "#331a38"]))
     ax.xaxis.label.set_color("white")
@@ -45,7 +45,7 @@ def plot_counters(data):
     ax.tick_params(axis="y", which="both", colors="white")
 
     ax.stackplot(timestamps, list_data.values(),
-                 labels=list_data.keys(), alpha=0.8)
+                 labels=list_data.keys(), alpha=0.8, step='post')
     ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required tickets w/ donations")
     ax.legend(loc="upper left")
     ax.set_title("MCH Tickets", color="white")
@@ -55,7 +55,7 @@ def plot_counters(data):
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %m/%d"))
 
     plt.gcf().autofmt_xdate()
-    plt.savefig("mch2022tickets.png")
+    plt.savefig("mch2022tickets.svg", dpi=350)
 
 
 async def process_tickets(tickets):
