@@ -13,8 +13,13 @@ import matplotlib.dates as mdates
 
 
 def get_updated_counters(tickets):
-    new_data = {key: [tickets[key]["sold"]] for key in tickets.keys()}
+    new_data = {key: [tickets[key]["sold"]] for key in tickets.keys() if isinstance(tickets[key], dict)}
     new_data["utc_epoch_time"] = time.time()
+
+    # Add donations if present
+    if "Anonymous donation (not refundable!)" in tickets and "MCH2022 Startup Donation (not refundable!)" in tickets:
+        new_data["Donations"] = tickets["Anonymous donation (not refundable!)"] + \
+                                tickets["MCH2022 Startup Donation (not refundable!)"]
 
     # Earlybirds were removed from MQTT on Jan 14th, but we do want them in this graph
     new_data["Early-BirdTickets"] = [512]
@@ -27,7 +32,8 @@ def get_updated_counters(tickets):
     data = read_csv(filename)
 
     last = data.tail(1)
-    differences = [key for key in new_data.keys() if key != 'utc_epoch_time' and (last[key] != new_data[key]).any()]
+    differences = any([key for key in new_data.keys() if key != 'utc_epoch_time' and
+                       key not in last or (last[key] != new_data[key]).any()])
 
     # Append the current row anyhow to move the graph forward
     data = data.append(DataFrame(new_data), ignore_index=True)
@@ -40,7 +46,7 @@ def get_updated_counters(tickets):
 
 def plot_counters(data):
     timestamps = [datetime.fromtimestamp(stamp) for stamp in data["utc_epoch_time"].to_list()]
-    hidden_list = ["utc_epoch_time", "CamperTicket", "Harbour"]
+    hidden_list = ["utc_epoch_time", "CamperTicket", "Harbour", "Donations"]
     list_data = {key: data[key].to_list() for key in data.keys() if not any([hidden in key for hidden in hidden_list])}
 
     fig, ax = plt.subplots()
@@ -54,12 +60,17 @@ def plot_counters(data):
 
     ax.stackplot(timestamps, list_data.values(),
                  labels=list_data.keys(), alpha=0.8, step='post')
-    ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required tickets w/ donations")
+    ax.plot(timestamps, data["Donations"], label="Donations")
+    ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required donations")
+    ax.axvline(x=datetime.strptime("22/02/28 21:00:00", "%y/%m/%d %H:%M:%S"), color="grey", linestyle="--",
+               label="MCH has to pay deposits")
     ax.legend(loc="upper left")
     ax.set_title("MCH Tickets", color="white")
     ax.set_ylabel("Number of tickets sold")
-    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=[mdates.MO, mdates.FR], tz=mdates.UTC))
-    ax.xaxis.set_minor_locator(mdates.WeekdayLocator(byweekday=[mdates.MO, mdates.TU, mdates.WE, mdates.TH, mdates.FR, mdates.SA, mdates.SU], tz=mdates.UTC))
+    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=[mdates.FR], tz=mdates.UTC))
+    ax.xaxis.set_minor_locator(
+        mdates.WeekdayLocator(byweekday=[mdates.MO, mdates.TU, mdates.WE, mdates.TH, mdates.FR, mdates.SA, mdates.SU],
+                              tz=mdates.UTC))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %m/%d"))
 
     plt.gcf().autofmt_xdate()

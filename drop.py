@@ -12,7 +12,7 @@ for idx, row in data.iterrows():
         continue
 
     differences = [key for key in row.keys() if key != 'utc_epoch_time' and (
-            (last[key] != row[key]).any()
+        (last[key] != row[key]).any()
     )]
     last = row
     if not differences:
