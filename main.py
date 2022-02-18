@@ -60,10 +60,10 @@ def plot_counters(data):
 
     ax.stackplot(timestamps, list_data.values(),
                  labels=list_data.keys(), alpha=0.8, step='post')
-    ax.plot(timestamps, data["Donations"], label="Donations")
-    ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required donations")
-    ax.axvline(x=datetime.strptime("22/02/28 21:00:00", "%y/%m/%d %H:%M:%S"), color="grey", linestyle="--",
-               label="MCH has to pay deposits")
+    # ax.plot(timestamps, data["Donations"], label="Donations")
+    # ax.axhline(y=1500, color="limegreen", linestyle="--", label="Required donations")
+    # ax.axvline(x=datetime.strptime("22/02/28 21:00:00", "%y/%m/%d %H:%M:%S"), color="grey", linestyle="--",
+    #            label="MCH has to pay deposits")
     ax.legend(loc="upper left")
     ax.set_title("MCH Tickets", color="white")
     ax.set_ylabel("Number of tickets sold")
